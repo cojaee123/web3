@@ -11,18 +11,16 @@ const Contract = () => {
     const [account, setAccount] = useState(null);
     const [greeting, setGreeting] = useState(null);
 
-
     const [blackNo, setBlackNo] = useState("");
     const [hashData, setHashData] = useState("");
 
     const [blackNo1, setBlackNo1] = useState("");
     const [hashData1, setHashData1] = useState("");
 
-    let [output, setOutput] = useState('');
-    let [file_input, setFileInput] = useState('');
-
     const [transactionHash, setTransactionHash] = useState('');
     const [showHashInput1, setShowHashInput1] = useState(false);
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // Connect to Web3
@@ -140,19 +138,26 @@ const Contract = () => {
         const transactionObject = contract.methods.hashAndStoreFile(blackNo, hashData);
 
         try {
+            setLoading(true); // Set loading to true before sending the transaction
+
+            // Simulate a time-consuming operation (replace with your actual sendTransaction logic)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
             // Send the transaction
             const receipt = await transactionObject.send({
                 from: senderAddress,
             });
 
             // Update the transaction hash and handle other logic as needed
-           // const rsText = JSON.stringify(receipt,null,2)
+            // const rsText = JSON.stringify(receipt,null,2)
             setTransactionHash(receipt.transactionHash);
             console.log('Transaction Successful:');
             //console.log(rsText)
             console.log(receipt)
         } catch (error) {
             console.error('Transaction Error:', error);
+        } finally {
+            setLoading(false); // Set loading to false after the operation is complete
         }
     };
 
@@ -169,7 +174,7 @@ const Contract = () => {
     };
 
     const createHash = (e) => {
-        if (!e.target.value ){
+        if (!e.target.value) {
             return
         }
         // Initializing the file reader
@@ -196,7 +201,7 @@ const Contract = () => {
     }
 
     const createHash1 = (e) => {
-        if (!e.target.value ){
+        if (!e.target.value) {
             return
         }
         // Initializing the file reader
@@ -223,33 +228,9 @@ const Contract = () => {
     }
 
     return (
-        // <div>
-        //     <h2>Hash File Contract </h2>
-        //     <p>Account: {account}</p>
-        //     {/* <p>ตัวอย่างข้อมูลในการทดสอบ</p> */}
-        //     <p>{hashData}</p>
-
-        //     black no : <input onChange={(e) => { setBlackNo(e.target.value) }}></input>
-
-        //     <input type='file' accept='.pdf' onChange={createHash} />
-
-        //     <br/>
-        //     hash : <input onChange={(e) => { setHashData(e.target.value) }} value={hashData}></input>
-        //     <button onClick={sendTransaction}>push</button>
-        //     <p>
-        //         <button onClick={callGetGreeting}>แสดงผล</button>
-        //     </p>
-        //     {greeting && <p>ผลลัพธ์: {greeting}</p>}
-
-        //     {/* <p>
-        //         <button onClick={sendTransaction}>push</button>
-        //     </p> */}
-        //     {transactionHash && <p>เลขtransact: {transactionHash}</p>}
-
-        // </div>
 
         <div className="hash-file-contract">
-            <h2>Hash File Contract</h2>
+            <h2>นำไฟล์เข้า Blockchain</h2>
             <p>Account: {account}</p>
 
             <div className="form-group">
@@ -258,7 +239,7 @@ const Contract = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="fileInput">Choose a PDF file:</label>
+                <label htmlFor="fileInput">เลือกไฟล์ (PDF):</label>
                 <input type="file" accept=".pdf" id="fileInput" onChange={createHash} />
             </div>
 
@@ -269,11 +250,18 @@ const Contract = () => {
 
             <button onClick={sendTransaction}>ส่งขึ้น Blockchain</button>
 
+            {loading && (
+                <div className="loading">
+                    <div className="spinner"></div>
+                    <p>Please wait...</p>
+                </div>
+            )}
 
             {transactionHash && <pre>Transaction ID: {transactionHash}</pre>}
 
 
             <hr />
+            <div className="colored-section">
             <h2>ตรวจสอบไฟล์หมายจับ</h2>
 
 
@@ -283,7 +271,7 @@ const Contract = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="fileInput1">Choose a PDF file:</label>
+                <label htmlFor="fileInput1">เลือกไฟล์ (PDF):</label>
                 <input type="file" accept=".pdf" id="fileInput1" onChange={createHash1} />
             </div>
 
@@ -298,6 +286,7 @@ const Contract = () => {
             </p>
 
             {greeting && <p>Result: {greeting}</p>}
+            </div>
         </div>
 
     );

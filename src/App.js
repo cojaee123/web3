@@ -24,7 +24,7 @@ function App() {
   return (
     <div className="App">
       <div>
-        <h1>9Aee Chain WEB3</h1>
+        <h1>ระบบตรวจสอบความถูกต้องเอกสารหมายจับ</h1>
         <Contract />
         
       </div>
