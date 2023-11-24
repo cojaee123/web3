@@ -69,4 +69,6 @@ button:hover {
   .colored-section {
     background-color: lightblue;
     /* Additional styling for the colored section if needed */
+    height: 80vh;
+    padding-top: 60px;
   }
